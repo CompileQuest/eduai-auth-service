@@ -1,0 +1,1 @@
+# eduai-auth-service
