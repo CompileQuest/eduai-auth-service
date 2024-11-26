@@ -4,8 +4,8 @@
     "private": true,
     "description": "",
     "main": "index.js",
-    "scripts": {
-"start": "nodemon --exec npx ts-node --project ./tsconfig.json ./index.ts"
+    "scripts": { 
+"start": "nodemon --exec npx ts-node --project ./tsconfig.json ./index.ts --ext ts,js"
     },
     "dependencies": {
         "cors": "^2.8.5",
