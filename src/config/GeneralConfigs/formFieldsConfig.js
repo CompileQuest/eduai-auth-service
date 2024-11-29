@@ -1,8 +1,7 @@
 // Signup and login form fields configuration
 const SignUpFormFields = [
-    { id: "name" },
+    { id: "role" },
     { id: "age", optional: true },
-    { id: "country", optional: true }
 ];
 
 

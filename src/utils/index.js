@@ -22,11 +22,30 @@ function extractFormFields(userContext) {
 
 
 
+function FormateData(data) {
+    if (data) {
+        return { data };
+    } else {
+        throw new Error("Data Not found!");
+    }
+};
 
-
+// Granular helper function to create event payload with flexible data
+function createPayloadWithEvent(event, data = {}) {
+    // Dynamically determine event if not provided
+    const derivedEvent = event || "no_event";
+    // Construct and return the payload with dynamic data
+    const payload = {
+        event: derivedEvent,
+        data: { ...data }  // Spread the provided data into the payload
+    };
+    //const formatedData = FormateData(payload);
+    return payload;
+} 
 
 
 export {
-    extractFormFields
+    extractFormFields,
+    FormateData,
+    createPayloadWithEvent
 }
-
