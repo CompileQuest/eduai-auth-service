@@ -18,8 +18,6 @@ function inspectObject(obj, depth = null, showHidden = false) {
         return "Error inspecting object.";
     }
 }
-
-
 export {
     inspectObject
 }

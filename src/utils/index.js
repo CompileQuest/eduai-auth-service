@@ -1,4 +1,8 @@
 import util from "util";
+import UserRoles from "supertokens-node/recipe/userroles";
+import { UserRoleClaim, PermissionClaim } from "supertokens-node/recipe/userroles";
+import  SessionContainer  from "supertokens-node/recipe/session"
+
 /**
  * Extracts and transforms form fields from the user context.
  * @param {Object} userContext - The user context object from the SuperTokens request.
@@ -19,7 +23,7 @@ function extractFormFields(userContext) {
         return null;
     }
 }
-
+  
 
 
 function FormateData(data) {
@@ -44,8 +48,34 @@ function createPayloadWithEvent(event, data = {}) {
 } 
 
 
+async function addRolesAndPermissionsToSession(session) {
+    // we add the user's roles to the user's session
+    await session.fetchAndSetClaim(UserRoleClaim)
+
+    // we add the permissions of a user to the user's session
+    await session.fetchAndSetClaim(PermissionClaim)
+}
+
+async function addRoleToUser(userId) {
+    const response = await UserRoles.addRoleToUser("public", userId, "student");
+    if (response.status === "UNKNOWN_ROLE_ERROR") {
+        // No such role exists
+        return;
+    }
+
+    if (response.didUserAlreadyHaveRole === true) {
+        // The user already had the role
+    }
+    return true;
+}
+
 export {
     extractFormFields,
     FormateData,
-    createPayloadWithEvent
+    createPayloadWithEvent,
+    addRolesAndPermissionsToSession,
+    addRoleToUser
 }
+
+
+

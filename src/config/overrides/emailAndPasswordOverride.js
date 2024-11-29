@@ -1,13 +1,11 @@
-import { extractFormFields, createPayloadWithEvent } from "../../utils/index.js";
+import { extractFormFields, createPayloadWithEvent  , addRoleToUser , addRolesAndPermissionsToSession} from "../../utils/index.js";
 import { PublishUserEvent } from "../../services/publisher.js";
 
 const emailAndPasswordOverride = (originalImplementation) => {
     return {
         ...originalImplementation,
-
         signUp: async function (input) {
-            // TODO: Pre SignUp Logic Here !!
-            const formData = extractFormFields(input.userContext); 
+            const formData = extractFormFields(input.userContext);
             if (!formData) {
                 console.error("Form fields are missing in the request");
                 return {
@@ -15,33 +13,47 @@ const emailAndPasswordOverride = (originalImplementation) => {
                     message: "Form fields are missing in the request.",
                 };
             }
+
+            // Call the original signUp implementation
             let response = await originalImplementation.signUp(input);
-            if (response.status === "OK" && response.user.loginMethods.length === 1 && input.session === undefined) {
-                // TODO: Post SignUp Logic Here !!
-                // Add userId from response to formData
+
+            if (response.status === "OK") {
+                const userId = response.user.id;
+
+                // Assign role to the user in the backend
+                const roleAdded = await addRoleToUser(userId);
+                if (!roleAdded) {
+                    console.error("Failed to assign role to the user");
+                }
+
+                // Add roles and permissions to session if a session exists
+                if (input.session) {
+                    try {
+                        await addRolesAndPermissionsToSession(input.session);
+                        console.log("Roles and permissions added to session");
+                    } catch (err) {
+                        console.error("Failed to add roles and permissions to session:", err);
+                    }
+                }
+
+                // Post-signup logic (e.g., event publishing)
                 const formDataWithUserId = {
-                    ...formData, // Spread existing formData
-                    userId: response.user.id ,// Add userId from response
-                    emailVerfied : response.user.loginMethods[0].verified,
-                    userTimeJoined: response.user.timeJoined
+                    ...formData,
+                    userId: userId,
+                    emailVerified: response.user.loginMethods[0].verified,
+                    userTimeJoined: response.user.timeJoined,
                 };
-                const payload = createPayloadWithEvent('CREATE_USER', formDataWithUserId);
+
+                const payload = createPayloadWithEvent("CREATE_USER", formDataWithUserId);
                 PublishUserEvent(payload);
-                console.log('User signed up successfully');
-            }
-            return response;
-        },
- 
-        signIn: async function (input) {
-            let response = await originalImplementation.signIn(input);
-            if (response.status === "OK" && input.session === undefined) {
-                // TODO: Post SignIn Logic here !!
-                console.log('User signed in successfully');
+
+                console.log("User signed up successfully with roles and session claims updated.");
             }
 
             return response;
         },
     };
 };
+
 
 export { emailAndPasswordOverride } 

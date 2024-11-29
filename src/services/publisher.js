@@ -12,7 +12,6 @@ async function PublishUserEvent(payload) {
         console.error("Error sending customer event:", error.message);
         throw error;
     }
-
 };
 
 
