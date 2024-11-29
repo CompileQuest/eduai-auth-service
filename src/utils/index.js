@@ -7,7 +7,6 @@ import util from "util";
 function extractFormFields(userContext) {
     try {
         const formFields = userContext?._default?.request?.parsedJSONBody?.formFields;
-        console.log("before doing anything " , formFields)
         if (formFields && Array.isArray(formFields)) {
             return formFields.reduce((acc, field) => {
                 acc[field.id] = field.value;
