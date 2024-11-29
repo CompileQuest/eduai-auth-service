@@ -1,37 +1,44 @@
 import ThirdParty from "supertokens-node/recipe/thirdparty";
 import EmailPassword from "supertokens-node/recipe/emailpassword";
 import Session from "supertokens-node/recipe/session";
-import { TypeInput } from "supertokens-node/types";
 import Dashboard from "supertokens-node/recipe/dashboard";
 import UserRoles from "supertokens-node/recipe/userroles";
 import EmailVerification from "supertokens-node/recipe/emailverification";
+import {
+    WEBSITE_DOMAIN,
+    API_DOMAIN,
+    SUPERTOKEN_CONNECTION_URL,
+    SUPERTOKEN_API_KEY
+} from './index.js'
+import util from "util";
+import {extractFormFields} from '../utils/index.js';
 
-export function getApiDomain() {
-    const apiPort = 8000;
-    const apiUrl = `http://localhost:${apiPort}`;
-    return apiUrl;
-}
-export function getWebsiteDomain() {
-    const websitePort = 3000;
-    const websiteUrl = `http://localhost:${websitePort}`;
-    return websiteUrl;
-}
-export const SuperTokensConfig: TypeInput = {
+export const SuperTokensConfig = {
     supertokens: {
         // this is the location of the SuperTokens core.
-        connectionURI:
-            "https://st-dev-33e43990-a1cc-11ef-bf24-a923520d8a44.aws.supertokens.io",
-        apiKey: "yN-XSzPvfJQ4W-j1p6ymgxFwkj",
+        connectionURI: SUPERTOKEN_CONNECTION_URL,
+        apiKey: SUPERTOKEN_API_KEY,
     },
     appInfo: {
         appName: "SuperTokens Demo App",
-        apiDomain: getApiDomain(),
-        websiteDomain: getWebsiteDomain(),
+        apiDomain: API_DOMAIN,
+        websiteDomain: WEBSITE_DOMAIN,
     },
     // recipeList contains all the modules that you want to
     // use from SuperTokens. See the full list here: https://supertokens.com/docs/guides
     recipeList: [
         EmailPassword.init({
+            signUpFeature: {
+                formFields: [{
+                    id: "name"
+                }, {
+                    id: "age",
+                    optional:true
+                }, {
+                    id: "country",
+                    optional: true
+                }]
+            },
             override: {
                 functions: (originalImplementation) => {
                     return {
@@ -40,11 +47,22 @@ export const SuperTokensConfig: TypeInput = {
                         // override the email password sign up function
                         signUp: async function (input) {
                             // TODO: some pre sign up logic
-                            console.log(input);
+                            
+                            // Use the helper function to extract form fields
+                            const formData = extractFormFields(input.userContext);
+                            
+                            if (!formData) {
+                                console.error("Form fields are missing in the request");
+                                return {
+                                    status: "GENERAL_ERROR",
+                                    message: "Form fields are missing in the request.",
+                                };
+                            }
+                            console.log("this is the form field " , formData)
 
                             let response = await originalImplementation.signUp(input);
 
-                            if (
+                            if ( 
                                 response.status === "OK" &&
                                 response.user.loginMethods.length === 1 &&
                                 input.session === undefined
@@ -63,13 +81,16 @@ export const SuperTokensConfig: TypeInput = {
 
                             if (response.status === "OK" && input.session === undefined) {
                                 // TODO: some post sign in logic
+                                // Todo:  convert it into event driven base in the future
+                                // for now using regular http request for this one !!
+
                             }
 
                             return response;
                         },
                     };
                 },
-            },
+            }
         }),
         ThirdParty.init({
             override: {
@@ -85,11 +106,8 @@ export const SuperTokensConfig: TypeInput = {
 
                             if (response.status === "OK") {
                                 let accessToken = response.oAuthTokens["access_token"];
+                                let firstName = response.rawUserInfoFromProvider.fromUserInfoAPI["first_name"];
 
-                                let firstName =
-                                    response.rawUserInfoFromProvider.fromUserInfoAPI![
-                                    "first_name"
-                                    ];
 
                                 if (input.session === undefined) {
                                     if (
