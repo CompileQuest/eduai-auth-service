@@ -3,7 +3,7 @@ async function PublishUserEvent(payload) {
     console.log("Sending event to User Service");
     console.log("sending this ", payload);
     try { 
-        const response = await axios.post("http://localhost:8001/app-events", {
+        const response = await axios.post("http://localhost:8080/api/v1/user/app-events", {
             payload,
         });
         console.log("Response received:", response.data);

@@ -3,13 +3,13 @@ import cors from "cors";
 import supertokens from "supertokens-node";
 import { verifySession } from "supertokens-node/recipe/session/framework/express";
 import { middleware, errorHandler } from "supertokens-node/framework/express";
-import { SuperTokensConfig } from "./config/supertokenConfig.js";
+import { SuperTokensConfig } from "./config/superTokenConfig.js"
 import Multitenancy from "supertokens-node/recipe/multitenancy";
 import HandleErrors from "./utils/error-handler.js";
 import path from "path";
 import { fileURLToPath } from "url";
 import { WEBSITE_DOMAIN } from "./config/index.js";
-import authRoutes from "./api/routes/authRoutes.js";
+import apiRoutes from "./api/index.js";
  
 export default async function expressApp(app) {
     // Get current directory using import.meta.url
@@ -35,7 +35,7 @@ export default async function expressApp(app) {
     
   
  
-    authRoutes(app);
+    apiRoutes(app);
     // This exposes all the APIs from SuperTokens to the client.
     app.use(middleware());
 

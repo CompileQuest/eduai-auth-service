@@ -1,6 +1,6 @@
 import { SignUpFormFields } from './GeneralConfigs/formFieldsConfig.js';
 import { emailAndPasswordOverride } from './overrides/emailAndPasswordOverride.js';
-import { socialLoginOverride } from './overrides/SocialLoginOverride.js';
+import { socialLoginOverride } from './overrides/socialLoginOverride.js';
 import { thirdPartyProviders } from './providers/thirdPartyProviders.js';
 import { SUPERTOKEN_CONNECTION_URL, SUPERTOKEN_API_KEY, WEBSITE_DOMAIN, API_DOMAIN } from "./index.js"
 import EmailPassword from "supertokens-node/recipe/emailpassword";
@@ -19,11 +19,13 @@ export const SuperTokensConfig = {
         appName: "SuperTokens Demo App",
         apiDomain: API_DOMAIN,
         websiteDomain: WEBSITE_DOMAIN,
+        apiBasePath: '/api/v1/auth'
     },
     recipeList: [
         EmailPassword.init({
             signUpFeature: {
                 formFields: SignUpFormFields,
+                apiPath:"hello/signup"
             },
             override: {
                 functions: emailAndPasswordOverride,

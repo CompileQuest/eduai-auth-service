@@ -6,7 +6,6 @@ const StartServer = async () => {
     const app = express();
     await expressApp(app);
 
-   
 
     app.listen(AUTH_SERVICE_PORT, () => {
         console.log(`auth service listening on port ${AUTH_SERVICE_PORT}`);
