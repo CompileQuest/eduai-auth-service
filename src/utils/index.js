@@ -1,7 +1,7 @@
 import util from "util";
 import UserRoles from "supertokens-node/recipe/userroles";
 import { UserRoleClaim, PermissionClaim } from "supertokens-node/recipe/userroles";
-import  SessionContainer  from "supertokens-node/recipe/session"
+import SessionContainer from "supertokens-node/recipe/session"
 
 /**
  * Extracts and transforms form fields from the user context.
@@ -23,7 +23,7 @@ function extractFormFields(userContext) {
         return null;
     }
 }
-  
+
 
 
 function FormateData(data) {
@@ -45,7 +45,7 @@ function createPayloadWithEvent(event, data = {}) {
     };
     //const formatedData = FormateData(payload);
     return payload;
-} 
+}
 
 
 async function addRolesAndPermissionsToSession(session) {
@@ -56,8 +56,8 @@ async function addRolesAndPermissionsToSession(session) {
     await session.fetchAndSetClaim(PermissionClaim)
 }
 
-async function addRoleToUser(userId) {
-    const response = await UserRoles.addRoleToUser("public", userId, "student");
+async function addRoleToUser(userId, Role) {
+    const response = await UserRoles.addRoleToUser("public", userId, Role);
     if (response.status === "UNKNOWN_ROLE_ERROR") {
         // No such role exists
         return;

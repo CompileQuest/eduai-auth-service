@@ -25,7 +25,7 @@ export const SuperTokensConfig = {
         EmailPassword.init({
             signUpFeature: {
                 formFields: SignUpFormFields,
-                apiPath:"hello/signup"
+                apiPath: "hello/signup"
             },
             override: {
                 functions: emailAndPasswordOverride,

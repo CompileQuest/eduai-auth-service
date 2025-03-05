@@ -1,4 +1,4 @@
-import { extractFormFields, createPayloadWithEvent  , addRoleToUser , addRolesAndPermissionsToSession} from "../../utils/index.js";
+import { extractFormFields, createPayloadWithEvent, addRoleToUser, addRolesAndPermissionsToSession } from "../../utils/index.js";
 import { PublishUserEvent } from "../../services/publisher.js";
 
 const emailAndPasswordOverride = (originalImplementation) => {
@@ -21,7 +21,7 @@ const emailAndPasswordOverride = (originalImplementation) => {
                 const userId = response.user.id;
 
                 // Assign role to the user in the backend
-                const roleAdded = await addRoleToUser(userId);
+                const roleAdded = await addRoleToUser(userId, formData.role);
                 if (!roleAdded) {
                     console.error("Failed to assign role to the user");
                 }
@@ -44,8 +44,13 @@ const emailAndPasswordOverride = (originalImplementation) => {
                     userTimeJoined: response.user.timeJoined,
                 };
 
-                const payload = createPayloadWithEvent("CREATE_USER", formDataWithUserId);
-                PublishUserEvent(payload);
+
+
+                // contact using one of the method here like for example maybe using 
+                // contact the user service here !!! if the user srevice didn't create the recored rollback 
+                // the authe service to delete the user !!
+                // const payload = createPayloadWithEvent("CREATE_USER", formDataWithUserId);
+                //  PublishUserEvent(payload);
 
                 console.log("User signed up successfully with roles and session claims updated.");
             }

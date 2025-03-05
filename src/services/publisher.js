@@ -2,7 +2,7 @@ import axios from "axios"
 async function PublishUserEvent(payload) {
     console.log("Sending event to User Service");
     console.log("sending this ", payload);
-    try { 
+    try {
         const response = await axios.post("http://localhost:8080/api/v1/user/app-events", {
             payload,
         });
@@ -17,5 +17,5 @@ async function PublishUserEvent(payload) {
 
 
 export {
-    PublishUserEvent, 
+    PublishUserEvent,
 }
