@@ -18,6 +18,8 @@ router.get("/", async (req, res) => {
 });
 
 
+
+
 // An example API that requires session verification
 router.get("/sessioninfo", verifySession(), async (req, res) => {
     let session = req.session;
