@@ -3,16 +3,28 @@ import Multitenancy from "supertokens-node/recipe/multitenancy";
 import express from 'express';
 import { getUsersNewestFirst } from "supertokens-node";
 import { deleteUser } from "supertokens-node";
-
+import AuthService from "../../../services/auth-service.js";
 
 const router = express.Router();
 
 
-router.get("/", async (req, res) => {
-    console.log("hello");
+router.get("/", async (req, res, next) => {
     try {
-        res.status(200).send('<html><body><h1>auth servive is working </h1></body></html>');
+        const service = new AuthService();
+        const payload = {
+            email: "mohasdfamasasfdeasd@gmail.com",
+            userId: "22asfasdfasfd=aass23nlf=23nlf23",
+            username: "aliasdfaasfsas",
+            role: "student",
+            emailVerified: true,
+            userTimeJoined: new Date("2024-03-07T12:34:56.789Z"), // Ensuring it's a Date object
+        };
+        const response = await service.createUserInUserService(payload)
+
+        res.status(200).send(response);
     } catch (err) {
+        console.log('hellllllllo')
+        console.log(err);
         next(err);
     }
 });
