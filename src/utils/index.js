@@ -48,33 +48,11 @@ function createPayloadWithEvent(event, data = {}) {
 }
 
 
-async function addRolesAndPermissionsToSession(session) {
-    // we add the user's roles to the user's session
-    await session.fetchAndSetClaim(UserRoleClaim)
-
-    // we add the permissions of a user to the user's session
-    await session.fetchAndSetClaim(PermissionClaim)
-}
-
-async function addRoleToUser(userId, Role) {
-    const response = await UserRoles.addRoleToUser("public", userId, Role);
-    if (response.status === "UNKNOWN_ROLE_ERROR") {
-        // No such role exists
-        return;
-    }
-
-    if (response.didUserAlreadyHaveRole === true) {
-        // The user already had the role
-    }
-    return true;
-}
 
 export {
     extractFormFields,
     FormateData,
     createPayloadWithEvent,
-    addRolesAndPermissionsToSession,
-    addRoleToUser
 }
 
 

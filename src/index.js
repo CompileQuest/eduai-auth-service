@@ -14,6 +14,6 @@ const StartServer = async () => {
             console.log(err);
             process.exit();
         })
-} 
+}
 
 StartServer();

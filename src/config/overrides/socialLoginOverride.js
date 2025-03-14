@@ -19,10 +19,6 @@ const socialLoginOverride = (originalImplementation) => {
                     let accessToken = response.oAuthTokens["access_token"];
                     let username = response.rawUserInfoFromProvider.fromUserInfoAPI["login"];
                     console.log(`Signed in via GitHub: ${username}`);
-                } else if (provider === "twitter") {
-                    let accessToken = response.oAuthTokens["access_token"];
-                    let screenName = response.rawUserInfoFromProvider.fromUserInfoAPI["screen_name"];
-                    console.log(`Signed in via Twitter: ${screenName}`);
                 }
 
                 if (input.session === undefined) {
