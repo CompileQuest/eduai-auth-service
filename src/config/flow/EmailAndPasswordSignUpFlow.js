@@ -6,6 +6,7 @@ import AuthService from "../../services/auth-service.js";
 import HttpClient from "../../services/external/httpClient.js";
 import services from "../../services/external/services.js";
 import { FormateData } from "../../utils/index.js";
+import { AppError } from "../../utils/app-errors.js";
 const authService = new AuthService();
 const httpClient = new HttpClient();
 export const EmailAndPasswordSignUpFlow = async (originalImplementation, input) => {
@@ -23,19 +24,10 @@ export const EmailAndPasswordSignUpFlow = async (originalImplementation, input) 
 
     const userNamePayload = FormateData(formData.username);
 
-    // Check if username exists in the user service (To be implemented)
-    const usernameExit = await httpClient.callService(
-        services.userService,
-        "check-username-exists",
-        userNamePayload
-    );
-    if (usernameExit) { // If username exists
-        console.error("Username already exists");
-        return {
-            status: "BAD_REQUEST",
-            message: "Username already exists.",
-        };
-    }
+    const usernameExit = await authService.userExitsInUserService(userNamePayload);
+
+
+
 
 
     // Sign up with SuperTokens Core
@@ -69,13 +61,33 @@ export const EmailAndPasswordSignUpFlow = async (originalImplementation, input) 
         userTimeJoined: response.user.timeJoined,
     };
 
-    // Publish user signup event (optional)
+    // Publish user signup event using message broker !!
+
+
+
+    // Create the user in the user service !!!
     try {
-        await PublishUserEvent(formDataWithUserId);
-        console.log("User signup event published successfully.");
-    } catch (err) {
-        console.error("Failed to publish user signup event:", err);
+        const userServiceResponse = await authService.createUserInUserService(formDataWithUserId);
+        // There was a problem creating the user in the user service !!! 
+        // Delete the user from the auth Service 
+        if (userServiceResponse.statusCode !== 200) {
+            // Delete the user from the auth service
+            const deleteUserResponse = await authService.deleteUserById(userId);
+        }
+
+        console.log("User created in user service successfully:", userServiceResponse);
+
+    } catch (error) {
+        throw error
     }
+
+
+
+
+
+
+
+
 
     console.log("User signed up successfully with roles and session claims updated.");
     return response;

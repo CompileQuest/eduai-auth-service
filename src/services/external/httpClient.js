@@ -16,11 +16,12 @@ class HttpClient {
 
         // Create a structured HTTP message
         const message = new HttpMessage(eventName, payload, metadata);
-
+        console.log("Message to be sent:", message);
         try {
             const response = await axios.post(serviceUrl, message, {
                 headers: { 'Content-Type': 'application/json' },
             });
+            console.log("Response from service:", response.data);
             return response.data;
         } catch (error) {
             if (error.response) {

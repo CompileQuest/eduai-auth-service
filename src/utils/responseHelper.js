@@ -1,3 +1,4 @@
+import { STATUS_CODES } from './app-errors.js';
 class ResponseHelper {
     // Success response structure
     static success(message, data = null) {
@@ -10,14 +11,15 @@ class ResponseHelper {
     }
 
     // Error response structure
-    static error(error) {
+    static error(description, error = {}) { // default empty object
         return {
             success: false,
             statusCode: error.statusCode || STATUS_CODES.INTERNAL_ERROR,
+            description: description,
             message: error.message || 'An unexpected error occurred.',
-            data: error.data || null,  // Include any additional error details if necessary
+            data: error.data || null,
         };
     }
 }
 
-module.exports = ResponseHelper;
+export default ResponseHelper;

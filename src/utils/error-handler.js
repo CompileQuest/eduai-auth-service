@@ -53,8 +53,10 @@ const ErrorHandler = async (err, req, res, next) => {
     if (err) {
         await errorLogger.logError(err);
         if (errorLogger.isTrustError(err)) {
-            // Trusted error: Send response to client
-            return res.status(err.statusCode).json({ message: err.description });
+            return res.status(err.statusCode).json({
+                success: false,
+                message: err.description // Message from the AppError instance
+            });
         } else {
             // Untrusted error: Exit process
             console.log(chalk.bgRed('🛑 Fatal error encountered. Shutting down...'));

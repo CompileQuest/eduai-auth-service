@@ -6,7 +6,7 @@ import { deleteUser } from "supertokens-node";
 import AuthService from "../../../services/auth-service.js";
 
 const router = express.Router();
-
+const authService = new AuthService();
 
 router.get("/", async (req, res, next) => {
     try {
@@ -89,6 +89,28 @@ router.get("/deleteAllUsers", async (req, res) => {
         totalUsers: allUsers.length,
     });
 });
+
+
+
+router.delete("/deleteUser/:userId", async (req, res, next) => {
+    const { userId } = req.params;
+
+    if (!userId) {
+        return res.status(400).json({ message: "User ID is required" });
+    }
+
+    try {
+        const deletedUser = await authService.deleteUserById(userId);
+        console.log(`Deleted user with ID: ${userId}`);
+        console.log("User deleted successfully", deletedUser);
+        return res.status(200).json(deletedUser);
+    } catch (error) {
+        console.log(`Error deleting user with ID: ${userId}`, error);
+        console.error(`Failed to delete user with ID: ${userId}`, error);
+        next(error);
+    }
+});
+
 
 
 export default router;  // ESM default export
