@@ -123,6 +123,7 @@ class AuthService {
         // capitalize the role name
         Role = Role.toUpperCase();
         // Check if the role exists
+        console.log("this is the role ", Role);
         const response = await UserRoles.addRoleToUser("public", userId, Role);
         if (response.status === "UNKNOWN_ROLE_ERROR") {
             // No such role exists
