@@ -1,7 +1,6 @@
 import {
     extractFormFields,
 } from "../../utils/index.js";
-import { PublishUserEvent } from "../../services/publisher.js";
 import AuthService from "../../services/auth-service.js";
 import HttpClient from "../../services/external/httpClient.js";
 import services from "../../services/external/services.js";

@@ -1,10 +1,8 @@
 import express from "express";
 import cors from "cors";
 import supertokens from "supertokens-node";
-import { verifySession } from "supertokens-node/recipe/session/framework/express";
 import { middleware, errorHandler } from "supertokens-node/framework/express";
 import { SuperTokensConfig } from "./config/superTokenConfig.js"
-import Multitenancy from "supertokens-node/recipe/multitenancy";
 import HandleErrors from "./utils/error-handler.js";
 import path from "path";
 import { fileURLToPath } from "url";

@@ -1,9 +1,8 @@
-import PaymentService from "../../services/payment-service.js";
-import { RoutingKeys } from "./fireAndForget/settings/routingKeys.js";
-
+import AuthService from "../../services/auth-service.js";
+import RoutingKeys from "./fireAndForget/settings/routingKeys.js"
 class MessageHandler {
     constructor() {
-        this.paymentService = new PaymentService();
+        this.paymentService = new AuthService();
 
         // Bind handlers
         this.handleCourseCreated = this.handleCourseCreated.bind(this);
